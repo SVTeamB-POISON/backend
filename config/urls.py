@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from flower.views import ProductListAPI,searchID
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+	path('api/product/', ProductListAPI.as_view()),
+    path('api/product/<int:flower_id>/', searchID.as_view()),
 ]
