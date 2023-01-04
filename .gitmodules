@@ -1,0 +1,6 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/SV-Team-B/frontend.git
+[submodule "docker"]
+	path = docker
+	url = https://github.com/SV-Team-B/docker.git
