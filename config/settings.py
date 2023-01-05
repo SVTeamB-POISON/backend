@@ -87,9 +87,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'flower_flowerlist',
-        'HOST': '127.0.0.1',
-        'PORT': 27017,
+        "CLIENT": {
+           "name": '0sik',
+           "host": 'mongodb+srv://0sik:qkrdudtlr0128@cluster0.pzgdv5k.mongodb.net/test',
+           "username": '0sik',
+           "password": 'qkrdudtlr0128',
+           "authMechanism": "SCRAM-SHA-1",
+        },
     }
 }
 
