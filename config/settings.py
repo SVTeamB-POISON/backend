@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'flower',
 ]
 
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
