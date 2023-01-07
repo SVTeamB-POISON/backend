@@ -8,17 +8,25 @@ from .models import flowerList
 from .serializers import flowerListSerializer
 from celery import Celery
 import requests
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import json
-
+import time
 app = Celery('tasks', broker='pyamqp://guest@localhost//')
 class ProductListAPI(APIView):
-    def get(self, request):
-        queryset = flowerList.objects.all()
-        print(queryset)
-        serializer = flowerListSerializer(queryset, many=True)
-        return Response(serializer.data)
-    
+    @app.task
+    def get(self):
+        # queryset = flowerList.objects.all()
+        # print(queryset)
+        # serializer = flowerListSerializer(queryset, many=True)
+        # return Response(serializer.data)
+        image_url = "https://img.freepik.com/free-photo/purple-osteospermum-daisy-flower_1373-16.jpg?w=2000"
+        json1 = {"id":image_url}
+        url = 'http://127.0.0.1:5001/model'
+        json2 = requests.post(url,json=json1)
+        json2 = json2.json()
+
+        return Response(json2,status=200)
+     
 #    @app.task
     def post(self,request):
         image_url = request.POST.get('id')
