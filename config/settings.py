@@ -85,12 +85,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         "CLIENT": {
-           "name": '0sik',
+           "name": 'Flower',
            "host": 'mongodb+srv://0sik:qkrdudtlr0128@cluster0.pzgdv5k.mongodb.net/test',
            "username": '0sik',
            "password": 'qkrdudtlr0128',
            "authMechanism": "SCRAM-SHA-1",
-        },
+        }
     }
 }
 

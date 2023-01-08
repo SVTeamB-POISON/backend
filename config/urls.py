@@ -14,11 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from flower.views import ProductListAPI,searchID
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-	path('api/product/', ProductListAPI.as_view()),
-    path('api/product/<int:flower_id>/', searchID.as_view()),
+	path('api/flowers/', include('flower.urls')),
 ]

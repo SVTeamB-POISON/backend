@@ -1,5 +1,4 @@
 .DS_Store
-<<<<<<< HEAD
 .idea
 ./flower/migrations
 *.log
@@ -10,7 +9,3 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media
-=======
-/flower/migrations
-.idea
->>>>>>> 9d3bfa209f984fb3a4fa6908ba1fac83ac6a46d5
