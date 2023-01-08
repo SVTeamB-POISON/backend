@@ -19,7 +19,6 @@ class FlowerDecisionAPI(APIView):
     
     def post(self,request):
 
-        
         # image to S3 , S3_url to backend
         
         s3_url = "https://img.freepik.com/free-photo/purple-osteospermum-daisy-flower_1373-16.jpg?w=2000"

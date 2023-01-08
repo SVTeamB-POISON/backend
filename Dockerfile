@@ -13,6 +13,4 @@ COPY . ./
 RUN adduser -D user
 USER user
 
-RUN celery -A flower worker -l info
-
 CMD ["python","manage.py","runserver","0.0.0.0:8000"]
