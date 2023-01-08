@@ -1,19 +1,11 @@
-from __future__ import absolute_import
-from celery import Celery
+from __future__ import absolute_import, unicode_literals
+from flower.celery import Celery
 from .models import Flower
 import requests
 import redis
-
-app = Celery('tasks', backend='redis://localhost', broker='pyamqp://guest@localhost//')
-rd = redis.StrictRedis(host='localhost', port=6379, db=0)
-
-# app.conf.update(
-#         CELERY_TASK_SERIALIZER = 'json',
-#         CELERY_RESULT_SERIALIZER = 'json',
-#         CELERY_ACCEPT_CONTENT=['json'],
-#         CELERY_TIMEZONE = 'Asia/Seoul',
-#         CELERY_ENABLE_UTC = True
-#                 )
+from django.conf import settings
+import time
+from .celery import app
 
 @app.task
 def descison(s3_url):
@@ -37,5 +29,5 @@ def descison(s3_url):
             "flower_language":flower.flower_language,
             "acc":acc
         })
-    
+
     return json_list
