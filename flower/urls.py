@@ -1,8 +1,9 @@
 from django.urls import path
 from . import views
-from .views import FlowerDecisionAPI
+from .views import FlowerDecisionAPI, SearchName, FlowerList
 
 urlpatterns = [
-	path('upload/', FlowerDecisionAPI.as_view()),
-    #path('<int:flower_id>/', searchID.as_view()),
+    path('', FlowerList.as_view()),
+    path('upload/', FlowerDecisionAPI.as_view()),
+    path('<str:flower_name>/', SearchName.as_view()),
 ]
