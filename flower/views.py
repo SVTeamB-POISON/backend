@@ -15,6 +15,17 @@ import base64
 #from PIL import Image
 
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.serializers.json import DjangoJSONEncoder
+
+
+class MyJsonEncoder(DjangoJSONEncoder):
+    def default(self, o):
+        if isinstance(o, InMemoryUploadedFile):
+            return o.read()
+        return str(o)
+
+
 class FlowerDecisionAPI(APIView):
 
     def post(self, request):
@@ -36,5 +47,17 @@ class FlowerList(APIView):
         if request.query_params:
             flower_name = request.query_params.get('name', None)
             queryset = Flower.objects.get(name=flower_name)
+            serializer = FlowerNameSerializer(queryset)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FlowerDetail(APIView):
+    def get(self, request):
+        if request.query_params:
+            flower_name = request.query_params.get('name', None)
+            queryset = Flower.objects.get(name=flower_name)
             serializer = FlowerSerializer(queryset)
+
+
         return Response(serializer.data, status=status.HTTP_200_OK)
