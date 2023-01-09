@@ -5,14 +5,9 @@ from .models import Flower
 from rest_framework.views import APIView, exceptions
 from .serializers import FlowerSerializer, FlowerNameSerializer
 from flower.celery import Celery
-import requests
-from django.http import HttpResponse, JsonResponse
-import json
 from .tasks import descison
-import time
-import redis
 import base64
-#from PIL import Image
+
 
 
 class FlowerDecisionAPI(APIView):
