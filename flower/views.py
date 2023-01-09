@@ -24,12 +24,14 @@ class FlowerDecisionAPI(APIView):
 
         return Response(json_list.get(), status=200)
 
+
 # 꽃 도감 출력
 class FlowerList(APIView):
     def get(self, request):
         queryset = Flower.objects.all()
         serializer = FlowerNameSerializer(queryset, many=True)
         return Response(serializer.data)
+
 
 # 꽃 이름으로 검색
 class SearchName(APIView):
@@ -38,6 +40,3 @@ class SearchName(APIView):
         serializer = FlowerSerializer(queryset, many=True)
 
         return Response(serializer.data)
-
-
-
