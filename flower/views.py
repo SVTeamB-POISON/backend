@@ -58,4 +58,5 @@ class FlowerDetail(APIView):
             queryset = Flower.objects.get(name=flower_name)
             serializer = FlowerSerializer(queryset)
 
+
         return Response(serializer.data, status=status.HTTP_200_OK)
