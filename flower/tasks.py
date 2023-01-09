@@ -8,9 +8,9 @@ import time
 from .celery import app
 
 @app.task
-def descison(s3_url):
-    ai_url = 'http://127.0.0.1:5001/model'
-    response = requests.post(ai_url,json={"id": s3_url})
+def descison(base64_string):
+    ai_url = 'http://localhost:5001/model/'
+    response = requests.post(ai_url,json={"id":base64_string})
     response = response.json()
     
     json_list = []

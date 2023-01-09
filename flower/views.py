@@ -11,19 +11,21 @@ import json
 from .tasks import descison
 import time
 import redis
+import base64
+#from PIL import Image
 
 
 class FlowerDecisionAPI(APIView):
 
     def post(self, request):
-        # image to S3 , S3_url to backend
+        file = request.FILES['id'].read()
+        base64_bs = base64.b64encode(file)
+        base64_string = base64_bs.decode('ascii')
 
-        s3_url = "https://img.freepik.com/free-photo/purple-osteospermum-daisy-flower_1373-16.jpg?w=2000"
+        json_list = descison.delay(base64_string)
 
-        json_list = descison.delay(s3_url)
 
         return Response(json_list.get(), status=200)
-
 
 # 꽃 도감 출력, 이름 검색
 class FlowerList(APIView):
