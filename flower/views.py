@@ -5,12 +5,9 @@ from .models import Flower
 from rest_framework.views import APIView, exceptions
 from .serializers import FlowerSerializer, FlowerNameSerializer
 from flower.celery import Celery
-import requests
-from django.http import HttpResponse, JsonResponse
-import json
 from .tasks import descison
-import time
-import redis
+import base64
+
 
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -27,17 +24,16 @@ class MyJsonEncoder(DjangoJSONEncoder):
 class FlowerDecisionAPI(APIView):
 
     def post(self, request):
-        # image to S3 , S3_url to backend
-        file = request.FILES['id']
-        obj = {
-            'id': file
-        }
+        file = request.FILES['id'].read()
+        base64_bs = base64.b64encode(file)
+        base64_string = base64_bs.decode('ascii')
 
-        json_list = descison.delay(json.dumps(obj, cls=MyJsonEncoder))
+        json_list = descison.delay(base64_string)
+
 
         return Response(json_list.get(), status=200)
 
-
+# 꽃 도감 출력, 이름 검색
 class FlowerList(APIView):
     def get(self, request):
         queryset = Flower.objects.all()
