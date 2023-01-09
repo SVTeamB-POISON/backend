@@ -53,7 +53,7 @@ class FlowerList(APIView):
 
 class FlowerDetail(APIView):
     def get(self, request):
-        if request.query_parms:
+        if request.query_params:
             flower_name = request.query_params.get('name', None)
             queryset = Flower.objects.get(name=flower_name)
             serializer = FlowerSerializer(queryset)
