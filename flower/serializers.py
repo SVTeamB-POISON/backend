@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Flower
 
+# api Serializers
 
 class FlowerNameSerializer(serializers.ModelSerializer):
     class Meta:
