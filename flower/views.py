@@ -19,8 +19,8 @@ class FlowerDecisionAPI(APIView):
         
         # Celery 비동기 처리
         json_list = descison.delay(base64_string)
-
-        return Response(json_list, status=200)
+    
+        return Response(json_list.get(), status=200)
 # 꽃 도감 출력, 이름 검색
 class FlowerList(APIView):
     def get(self, request):
