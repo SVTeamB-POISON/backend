@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from .models import Flower
 import requests
 from .celery import app
-
+import unicodedata
 # Celery task
 @app.task
 def descison(base64_string):
@@ -16,11 +16,13 @@ def descison(base64_string):
     json_list = []
 
     for i in response:
-        acc, nam = i.values()
-        flower = Flower.objects.get(name=nam)
+        acc, name = i.values()
+        # 한글이 자음 모음 형태로 분리되어 깨질 때 해결방안
+        name = unicodedata.normalize('NFC',name)
+        flower = Flower.objects.get(name=name)
 
         json_list.append({
-            "name": nam,
+            "name": name,
             "s3_url": flower.s3_url,
             "poison": flower.poison,
             "symptom": flower.symptom,
