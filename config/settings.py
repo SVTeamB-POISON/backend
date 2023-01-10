@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+env = environ.Env()
+
+# read th .env file
+environ.Env.read_env()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-feg2@#)(vu5#r)zr%!*me1qrk!m_3ipard5np1+fkxysi$ed7g'
+SECRET_KEY=env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -88,7 +96,7 @@ DATABASES = {
            "name": 'Flower',
            "host": 'mongodb+srv://0sik:qkrdudtlr0128@cluster0.pzgdv5k.mongodb.net/test',
            "username": '0sik',
-           "password": 'qkrdudtlr0128',
+           "password": env('DJANGO_PASSWORD'),
            "authMechanism": "SCRAM-SHA-1",
         }
     }
