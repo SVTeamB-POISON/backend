@@ -1,11 +1,8 @@
-from django.http import JsonResponse
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Flower
 from rest_framework.views import APIView, exceptions
 from .serializers import FlowerSerializer, FlowerNameSerializer
-from flower.celery import Celery
 from .tasks import descison
 import base64
 from django.core.paginator import Paginator
@@ -25,7 +22,7 @@ class FlowerDecisionAPI(APIView):
         return Response(json_list.get(), status=200)
 
 
-# 꽃 도감 출력(무한 스크롤), 이름 검색,
+# 꽃 도감 출력(pagination), 이름 검색,
 class FlowerList(APIView):
 
     def get(self, request):
