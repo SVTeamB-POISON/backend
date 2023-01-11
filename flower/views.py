@@ -51,23 +51,25 @@ class FlowerList(APIView):
         pre = flower_obj.has_previous()
         next = flower_obj.has_next()
 
-        if (pre&next):
-            prePage = "api/flowers?page=" + str(flower_obj.previous_page_number())
-            nextPage = "api/flowers?page=" + str(flower_obj.next_page_number())
-        else:
-            if(pre):
-                prePage = "api/flowers?page=" + str(flower_obj.previous_page_number())
-                nextPage = None
+        if pre:
+            if next:
+                data = {"hasNextPage": next, "hasPrevPage": pre,
+                        "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
+                        "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
+                        "data": serializer.data}
             else:
-                prePage = None
-                nextPage = "api/flowers?page=" + str(flower_obj.next_page_number())
-
-        data = {"hasNextPage": next, "hasPrevPage": pre,
-                "nextPage": nextPage,
-                "prevPage": prePage,
-                "data": serializer.data}
+                data = {"hasNextPage": next, "hasPrevPage": pre,
+                        "nextPage": None,
+                        "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
+                        "data": serializer.data}
+        else:
+            data = {"hasNextPage": next, "hasPrevPage": pre,
+                    "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
+                    "prevPage": None,
+                    "data": serializer.data}
 
         return Response(data)
+
 
 # 꽃 세부 정보
 class FlowerDetail(APIView):
