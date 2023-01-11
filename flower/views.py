@@ -27,15 +27,14 @@ class FlowerList(APIView):
 
     def get(self, request):
         page = request.GET.get('page', '1')
-        flower_list = Flower.objects.order_by('id')
+        name = request.GET.get('name', None)
+        
+        # 이름 순으로 정렬후 pagination
+        flower_list = Flower.objects.order_by('name')
         paginator = Paginator(flower_list, 6)
         flower_obj = paginator.get_page(page)
-        queryset = Flower.objects.filter(id__lte=6)
-        serializer = FlowerNameSerializer(queryset, many=True)
 
-        name = request.GET.get('name', None)
-        page = request.GET.get('page', None)
-
+        # 파라미터가 name 이면 해당 꽃 정보 제공
         if name:
             flower_name = request.query_params.get('name', None)
             queryset = Flower.objects.filter(name__contains=flower_name)
@@ -43,31 +42,30 @@ class FlowerList(APIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        elif page:
-            if flower_obj.number == 1:
-                queryset = Flower.objects.filter(id__lte=6)
+        queryset = paginator.page(flower_obj.number)
+        serializer = FlowerNameSerializer(queryset,many=True)
+        
+        pre = flower_obj.has_previous()
+        next = flower_obj.has_next()
+
+        if pre:
+            if next:
+                data = {"hasNextPage": next, "hasPrevPage": pre,
+                        "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
+                        "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
+                        "data": serializer.data}
             else:
-                queryset = Flower.objects.filter(id__gt=6 * (flower_obj.number - 1)).filter(
-                    id__lte=(6 * flower_obj.number))
-
-            serializer = FlowerNameSerializer(queryset, many=True)
-
-        if flower_obj.has_previous():
-            if flower_obj.has_next():
-                return Response({"hasNextPage": True, "hasPrevPage": True,
-                                 "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
-                                 "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
-                                 "data": serializer.data})
-            else:
-                return Response({"hasNextPage": False, "hasPrevPage": True,
-                                 "nextPage": None,
-                                 "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
-                                 "data": serializer.data})
-
+                data = {"hasNextPage": next, "hasPrevPage": pre,
+                        "nextPage": None,
+                        "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
+                        "data": serializer.data}
         else:
-            return Response({"hasNextPage": True, "hasPrevPage": False,
-                             "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
-                             "prevPage": None, "data": serializer.data})
+            data = {"hasNextPage": next, "hasPrevPage": pre,
+                    "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
+                    "prevPage": None,
+                    "data": serializer.data}
+
+        return Response(data)
 
 
 # 꽃 세부 정보
