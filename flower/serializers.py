@@ -13,3 +13,9 @@ class FlowerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flower
         fields = "__all__"
+        
+class FlowerRankingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flower
+        fields = ('name', 'poison','count','total_count')
+        

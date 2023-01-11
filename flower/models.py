@@ -10,3 +10,5 @@ class Flower(models.Model):
     scientific_name = models.CharField(max_length=100)
     flower_language = models.CharField(max_length=100)
     detail = models.TextField()
+    count = models.IntegerField(default=0)
+    total_count = models.IntegerField(default=0)
