@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import environ
 import os
-from celery.schedules import crontab
 
 
 env = environ.Env()
@@ -146,11 +145,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CELERYBEAT_SCHEDULE = {
-        'update_rangking': {
-            'task': 'flower.tasks.ranking_schedule()',
-            'schedule': crontab(),
-            'args': ()
-        }
-    }      

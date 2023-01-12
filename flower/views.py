@@ -6,6 +6,7 @@ from .serializers import FlowerSerializer, FlowerNameSerializer, FlowerRankingSe
 from .tasks import descison
 import base64
 from django.core.paginator import Paginator
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 
 # 이미지 업로드, AI 판단 후 탑3 꽃 응답
@@ -26,22 +27,20 @@ class FlowerDecisionAPI(APIView):
 class FlowerList(APIView):
 
     def get(self, request):
+        pre_page_num = None
+        next_page_num = None
+        naming = None
+        
         page = request.GET.get('page', '1')
         name = request.GET.get('name', None)
-        
+
         # 이름 순으로 정렬후 pagination
-        flower_list = Flower.objects.order_by('name')
+        flower_list = Flower.objects.all().order_by('name')
 
         # 파라미터가 name 이면 해당 꽃 정보 제공
         if name :
             flower_name = request.query_params.get('name', None)
             flower_list = Flower.objects.filter(name__contains=flower_name).order_by('name')
-            #flower_list = flower_list.objects.order_by('name')
-           
-
-            # serializer = FlowerNameSerializer(flower_list, many=True)
-
-            # return Response(serializer.data, status=status.HTTP_200_OK)
         
         paginator = Paginator(flower_list, 6)
         flower_obj = paginator.get_page(page)
@@ -51,30 +50,23 @@ class FlowerList(APIView):
 
         pre = flower_obj.has_previous()
         next = flower_obj.has_next()
+        
+        if name is None:
+            name=""
+        try:
+            prevPage="api/flowers?page="+str(flower_obj.previous_page_number())+"&name="+name
+        except:
+            prevPage=None        
+        try:
+            nextPage="api/flowers?page="+str(flower_obj.next_page_number())+"&name="+name
+        except:
+            nextPage=None
 
-        if pre:
-            if next:
-                data = {"hasNextPage": next, "hasPrevPage": pre,
-                        "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
-                        "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
-                        "data": serializer.data}
-            else:
-                data = {"hasNextPage": next, "hasPrevPage": pre,
-                        "nextPage": None,
-                        "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
-                        "data": serializer.data}
-        else:
-            if next:
-                data = {"hasNextPage": next, "hasPrevPage": pre,
-                        "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
-                        "prevPage": None,
-                        "data": serializer.data}
-            else:
-                data = {"hasNextPage": next, "hasPrevPage": pre,
-                        "nextPage": None,
-                        "prevPage": None,
-                        "data": serializer.data}
-
+        data = {"hasNextPage": next, "hasPrevPage": pre,
+                "nextPage": nextPage,
+                "prevPage": prevPage,
+                "data": serializer.data}
+        
         return Response(data)
 
 
@@ -90,6 +82,26 @@ class FlowerDetail(APIView):
 
 class FlowerRanking(APIView):
     def get(self, request):
+        schedule, created = IntervalSchedule.objects.get_or_create(every=10,period=IntervalSchedule.SECONDS,)
+        if PeriodicTask.objects.filter(name='dbcnt').exists(): #'test_task'가 등록되어 있으면,
+            p_test=PeriodicTask.objects.get(name='dbcnt')
+            p_test.enabled=True #실행시킨다.
+            p_test.interval=schedule
+            p_test.save()
+        # else: #'test_task'가 등록되어 있지 않으면, 새로 생성한다
+        #     PeriodicTask.objects.create(
+        #     interval=schedule,  #앞서 정의한 schedule       
+        #     name='test_task',          
+        #     task='bracken.tasks.test_task',
+        #     )
+
+
+        
+        try: 
+            Flower.objects.all().update(count=0)
+        except:
+            pass
+        
         ranking_list = Flower.objects.all().order_by('-count')
         serializer = FlowerRankingSerializer(ranking_list[:3], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
