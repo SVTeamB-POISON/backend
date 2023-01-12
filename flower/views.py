@@ -6,12 +6,16 @@ from .serializers import FlowerSerializer, FlowerNameSerializer, FlowerHourRanki
 from .tasks import descison
 import base64
 from django.core.paginator import Paginator
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 
 # 이미지 업로드, AI 판단 후 탑3 꽃 응답
 class FlowerDecisionAPI(APIView):
+    type = openapi.Parameter('image', openapi.FORMAT_BASE64, description='image parm', required=False, type=openapi.TYPE_FILE)
 
+    @swagger_auto_schema(tags=['지정한 데이터의 상세 정보를 불러옵니다.'], manual_parameters=[type], responses={200: 'Success'})
     def post(self, request):
         file = request.FILES['id'].read()
         base64_bs = base64.b64encode(file)
@@ -25,7 +29,9 @@ class FlowerDecisionAPI(APIView):
 
 # 꽃 도감 출력(pagination), 이름 검색,
 class FlowerList(APIView):
-
+    name = openapi.Parameter('name', openapi.IN_QUERY, description='search parm', required=False, type=openapi.TYPE_STRING)
+    
+    @swagger_auto_schema(tags=['지정한 데이터의 상세 정보를 불러옵니다.'], manual_parameters=[name], responses={200: 'Success'})
     def get(self, request):
         pre_page_num = None
         next_page_num = None
@@ -72,6 +78,9 @@ class FlowerList(APIView):
 
 # 꽃 세부 정보
 class FlowerDetail(APIView):
+    name = openapi.Parameter('name', openapi.IN_QUERY, description='name parm', required=False, type=openapi.TYPE_STRING)
+
+    @swagger_auto_schema(tags=['지정한 데이터의 상세 정보를 불러옵니다.'], manual_parameters=[name], responses={200: 'Success'})
     def get(self, request):
         if request.query_params:
             flower_name = request.query_params.get('name', None)
@@ -81,6 +90,7 @@ class FlowerDetail(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FlowerHourRanking(APIView):
+
     def get(self, request):
         ranking_list = Flower.objects.all().order_by('-count')
         serializer = FlowerHourRankingSerializer(ranking_list[:6], many=True)
