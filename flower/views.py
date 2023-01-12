@@ -34,7 +34,7 @@ class FlowerList(APIView):
         page = request.GET.get('page', '1')
         name = request.GET.get('name', None)
 
-        # 이름 순으로 정렬후 pagination
+        # 이름 순으로 정렬후 paginationhttps://coding-kindergarten.tistory.com/164
         flower_list = Flower.objects.all().order_by('name')
 
         # 파라미터가 name 이면 해당 꽃 정보 제공
@@ -82,26 +82,7 @@ class FlowerDetail(APIView):
 
 class FlowerRanking(APIView):
     def get(self, request):
-        schedule, created = IntervalSchedule.objects.get_or_create(every=10,period=IntervalSchedule.SECONDS,)
-        if PeriodicTask.objects.filter(name='dbcnt').exists(): #'test_task'가 등록되어 있으면,
-            p_test=PeriodicTask.objects.get(name='dbcnt')
-            p_test.enabled=True #실행시킨다.
-            p_test.interval=schedule
-            p_test.save()
-        # else: #'test_task'가 등록되어 있지 않으면, 새로 생성한다
-        #     PeriodicTask.objects.create(
-        #     interval=schedule,  #앞서 정의한 schedule       
-        #     name='test_task',          
-        #     task='bracken.tasks.test_task',
-        #     )
 
-
-        
-        try: 
-            Flower.objects.all().update(count=0)
-        except:
-            pass
-        
         ranking_list = Flower.objects.all().order_by('-count')
         serializer = FlowerRankingSerializer(ranking_list[:3], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
