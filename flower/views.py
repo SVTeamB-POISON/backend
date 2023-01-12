@@ -54,11 +54,11 @@ class FlowerList(APIView):
         if name is None:
             name=""
         try:
-            prevPage="api/flowers?page="+str(flower_obj.previous_page_number())+"&name="+name
+            prevPage="/flowers?page="+str(flower_obj.previous_page_number())+"&name="+name
         except:
             prevPage=None        
         try:
-            nextPage="api/flowers?page="+str(flower_obj.next_page_number())+"&name="+name
+            nextPage="/flowers?page="+str(flower_obj.next_page_number())+"&name="+name
         except:
             nextPage=None
 
