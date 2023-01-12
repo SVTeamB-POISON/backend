@@ -85,7 +85,7 @@ class FlowerHourRanking(APIView):
         ranking_list = Flower.objects.all().order_by('-count')
         serializer = FlowerHourRankingSerializer(ranking_list[:6], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
 class FlowerTotalRanking(APIView):
     def get(self, request):
         ranking_list = Flower.objects.all().order_by('-total_count')
