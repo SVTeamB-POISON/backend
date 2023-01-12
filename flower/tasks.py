@@ -2,24 +2,13 @@ from __future__ import absolute_import, unicode_literals
 from .models import Flower
 import requests
 from .celery import app
-from celery import shared_task
-from django_celery_beat.models import PeriodicTask, CrontabSchedule
 import unicodedata
 from django.conf import settings
-import django
-django.setup()
-from celery import shared_task
 
 
-
-@shared_task
-def dbcnt():
-    flower = Flower.objects.all()
-    flower.update(count=0)
-    flower.save()
 
 # Celery task
-@shared_task
+@app.task
 def descison(base64_string):
     
     ai_url = 'http://localhost:5001/model'

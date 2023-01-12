@@ -6,7 +6,7 @@ from .serializers import FlowerSerializer, FlowerNameSerializer, FlowerHourRanki
 from .tasks import descison
 import base64
 from django.core.paginator import Paginator
-from django_celery_beat.models import PeriodicTask, IntervalSchedule
+
 
 
 # 이미지 업로드, AI 판단 후 탑3 꽃 응답
