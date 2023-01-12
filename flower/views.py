@@ -27,22 +27,20 @@ class FlowerDecisionAPI(APIView):
 class FlowerList(APIView):
 
     def get(self, request):
+        pre_page_num = None
+        next_page_num = None
+        naming = None
+        
         page = request.GET.get('page', '1')
         name = request.GET.get('name', None)
-        
+
         # 이름 순으로 정렬후 pagination
-        flower_list = Flower.objects.order_by('name')
+        flower_list = Flower.objects.all().order_by('name')
 
         # 파라미터가 name 이면 해당 꽃 정보 제공
         if name :
             flower_name = request.query_params.get('name', None)
             flower_list = Flower.objects.filter(name__contains=flower_name).order_by('name')
-            #flower_list = flower_list.objects.order_by('name')
-           
-
-            # serializer = FlowerNameSerializer(flower_list, many=True)
-
-            # return Response(serializer.data, status=status.HTTP_200_OK)
         
         paginator = Paginator(flower_list, 6)
         flower_obj = paginator.get_page(page)
@@ -52,30 +50,23 @@ class FlowerList(APIView):
 
         pre = flower_obj.has_previous()
         next = flower_obj.has_next()
+        
+        if name is None:
+            name=""
+        try:
+            prevPage="api/flowers?page="+str(flower_obj.previous_page_number())+"&name="+name
+        except:
+            prevPage=None        
+        try:
+            nextPage="api/flowers?page="+str(flower_obj.next_page_number())+"&name="+name
+        except:
+            nextPage=None
 
-        if pre:
-            if next:
-                data = {"hasNextPage": next, "hasPrevPage": pre,
-                        "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
-                        "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
-                        "data": serializer.data}
-            else:
-                data = {"hasNextPage": next, "hasPrevPage": pre,
-                        "nextPage": None,
-                        "prevPage": "api/flowers?page=" + str(flower_obj.previous_page_number()),
-                        "data": serializer.data}
-        else:
-            if next:
-                data = {"hasNextPage": next, "hasPrevPage": pre,
-                        "nextPage": "api/flowers?page=" + str(flower_obj.next_page_number()),
-                        "prevPage": None,
-                        "data": serializer.data}
-            else:
-                data = {"hasNextPage": next, "hasPrevPage": pre,
-                        "nextPage": None,
-                        "prevPage": None,
-                        "data": serializer.data}
-
+        data = {"hasNextPage": next, "hasPrevPage": pre,
+                "nextPage": nextPage,
+                "prevPage": prevPage,
+                "data": serializer.data}
+        
         return Response(data)
 
 
