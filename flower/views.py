@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from .models import Flower
 from rest_framework.views import APIView, exceptions
-from .serializers import FlowerSerializer, FlowerNameSerializer, FlowerRankingSerializer
+from .serializers import FlowerSerializer, FlowerNameSerializer, FlowerHourRankingSerializer,FlowerTotalRankingSerializer
 from .tasks import descison
 import base64
 from django.core.paginator import Paginator
@@ -80,9 +80,14 @@ class FlowerDetail(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class FlowerRanking(APIView):
+class FlowerHourRanking(APIView):
     def get(self, request):
-
         ranking_list = Flower.objects.all().order_by('-count')
-        serializer = FlowerRankingSerializer(ranking_list[:3], many=True)
+        serializer = FlowerHourRankingSerializer(ranking_list[:6], many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class FlowerTotalRanking(APIView):
+    def get(self, request):
+        ranking_list = Flower.objects.all().order_by('-total_count')
+        serializer = FlowerTotalRankingSerializer(ranking_list[:6], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
