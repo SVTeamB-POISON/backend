@@ -8,13 +8,15 @@ import base64
 from django.core.paginator import Paginator
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
+from rest_framework.parsers import MultiPartParser
 
 # 이미지 업로드, AI 판단 후 탑3 꽃 응답
 class FlowerDecisionAPI(APIView):
-    type = openapi.Parameter('id', openapi.IN_FORM, description='Document to be uploaded',type=openapi.TYPE_FILE)
+    parser_classes = [MultiPartParser]
     
-    @swagger_auto_schema(operation_id='Create a document',operation_description='Create a document by providing file',manual_parameters=[type])
+    type = openapi.Parameter('id', openapi.IN_FORM, type=openapi.TYPE_FILE, description='Document to be uploaded')
+    @swagger_auto_schema(manual_parameters=[type])
+    
     def post(self, request):
         file = request.FILES['id'].read()
         base64_bs = base64.b64encode(file)
@@ -26,11 +28,12 @@ class FlowerDecisionAPI(APIView):
         return Response(json_list.get(), status=200)
 
 
-# 꽃 도감 출력(pagination), 이름 검색,
+# 꽃 도감 출력(pagination), 이름 검색
 class FlowerList(APIView):
     name = openapi.Parameter('name', openapi.IN_QUERY, description='search parm', required=False, type=openapi.TYPE_STRING)
-    
-    @swagger_auto_schema(tags=['지정한 데이터의 상세 정보를 불러옵니다.'], manual_parameters=[name], responses={200: 'Success'})
+    page = openapi.Parameter('page', openapi.IN_QUERY, description='search parm', required=False, type=openapi.TYPE_INTEGER)  
+      
+    @swagger_auto_schema(manual_parameters=[name,page], responses={200: 'Success'})
     def get(self, request):
         pre_page_num = None
         next_page_num = None
@@ -39,7 +42,7 @@ class FlowerList(APIView):
         page = request.GET.get('page', '1')
         name = request.GET.get('name', None)
 
-        # 이름 순으로 정렬후 paginationhttps://coding-kindergarten.tistory.com/164
+        # 이름 순으로 정렬후 pagination
         flower_list = Flower.objects.all().order_by('name')
 
         # 파라미터가 name 이면 해당 꽃 정보 제공
@@ -79,7 +82,7 @@ class FlowerList(APIView):
 class FlowerDetail(APIView):
     name = openapi.Parameter('name', openapi.IN_QUERY, description='name parm', required=False, type=openapi.TYPE_STRING)
 
-    @swagger_auto_schema(tags=['지정한 데이터의 상세 정보를 불러옵니다.'], manual_parameters=[name], responses={200: 'Success'})
+    @swagger_auto_schema(manual_parameters=[name], responses={200: 'Success'})
     def get(self, request):
         if request.query_params:
             flower_name = request.query_params.get('name', None)
