@@ -38,7 +38,10 @@ urlpatterns = [
     path(r'redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc-v1'),
     path('admin/', admin.site.urls),
     path('api/flowers/', include('flower.urls')),
+
 ]
+
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # http://localhost:8000/swagger
+

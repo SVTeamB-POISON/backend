@@ -21,11 +21,14 @@ def descison(base64_string):
 
     for i in response:
         acc, name = i.values()
+
         if(acc==0):
             break
+
         # 한글이 자음 모음 형태로 분리되어 깨질 때 해결방안
         name = unicodedata.normalize('NFC',name)
         flower = Flower.objects.get(name=name)
+
         flower.count += 1
         flower.total_count += 1
         flower.save()
