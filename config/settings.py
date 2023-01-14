@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'flower',
     'drf_yasg',
+    # 스웨거
 
 ]
 
