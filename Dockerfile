@@ -1,4 +1,4 @@
-FROM python:3.10-alpine
+FROM python:3.10
 
 ENV PYTHONUNBUFFERED 1
 
@@ -9,9 +9,7 @@ RUN pip install -r /requirements.txt
 
 WORKDIR /app
 COPY . ./
-
-RUN adduser -D user
-USER user
+RUN python manage.py collectstatic
 
 CMD ["gunicorn", "--bind", "0:8000", "config.wsgi:application"]
 
