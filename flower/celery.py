@@ -4,6 +4,7 @@ import os
 from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+
 # app = Celery('flower',
 #              broker='pyamqp://guest@localhost//',
 #              backend='redis://localhost',

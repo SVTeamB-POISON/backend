@@ -7,7 +7,7 @@ from .models import Flower
 class FlowerNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flower
-        fields = ('name', 's3_url', 'poison')
+        fields = ['name', 's3_url', 'poison']
 
 
 class FlowerSerializer(serializers.ModelSerializer):
@@ -19,10 +19,10 @@ class FlowerSerializer(serializers.ModelSerializer):
 class FlowerHourRankingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flower
-        fields = ('name', 's3_url', 'poison', 'count')
+        fields = ['name', 's3_url', 'poison', 'count']
 
 
 class FlowerTotalRankingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flower
-        fields = ('name', 's3_url', 'poison', 'total_count')
+        fields = ['name', 's3_url', 'poison', 'total_count']

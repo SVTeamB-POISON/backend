@@ -10,12 +10,11 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 
-
 # 이미지 업로드, AI 판단 후 탑3 꽃 응답
 class FlowerDecisionAPI(APIView):
-    type = openapi.Parameter('image', openapi.FORMAT_BASE64, description='image parm', required=False, type=openapi.TYPE_FILE)
-
-    @swagger_auto_schema(tags=['지정한 데이터의 상세 정보를 불러옵니다.'], manual_parameters=[type], responses={200: 'Success'})
+    type = openapi.Parameter('id', openapi.IN_FORM, description='Document to be uploaded',type=openapi.TYPE_FILE)
+    
+    @swagger_auto_schema(operation_id='Create a document',operation_description='Create a document by providing file',manual_parameters=[type])
     def post(self, request):
         file = request.FILES['id'].read()
         base64_bs = base64.b64encode(file)
