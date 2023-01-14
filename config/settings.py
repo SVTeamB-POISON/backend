@@ -35,7 +35,7 @@ SECRET_KEY=env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','poisonsvb.com']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','poisonsvb.com','host.docker.internal']
 
 
 # Application definition
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'flower',
     'drf_yasg', # 스웨거
+    'django_prometheus',
 ]
 
 
@@ -63,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True # <- 모든 호스트 허용

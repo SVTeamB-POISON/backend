@@ -11,5 +11,4 @@ WORKDIR /app
 COPY . ./
 RUN python manage.py collectstatic
 
-CMD ["gunicorn", "--bind", "0:8000", "config.wsgi:application"]
 
