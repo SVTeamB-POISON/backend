@@ -22,7 +22,7 @@ def descison(base64_string):
     for i in response:
         acc, name = i.values()
 
-        if acc == 0.0:
+        if(acc==0):
             break
 
         # 한글이 자음 모음 형태로 분리되어 깨질 때 해결방안
