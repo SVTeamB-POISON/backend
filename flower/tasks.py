@@ -28,6 +28,9 @@ def descison(base64_string):
         flower.total_count += 1
         flower.save()
 
+        if acc == 0.0:
+            break
+
         json_list.append({
             "name": name,
             "s3_url": flower.s3_url,
