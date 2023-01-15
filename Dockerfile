@@ -12,3 +12,4 @@ COPY . ./
 RUN python manage.py collectstatic
 
 
+CMD ["python","manage.py","runserver"]
