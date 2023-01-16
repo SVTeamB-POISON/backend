@@ -9,7 +9,7 @@ RUN pip install -r /requirements.txt
 
 WORKDIR /app
 COPY . ./
-RUN python manage.py collectstatic
 
 
-CMD ["python","manage.py","runserver"]
+
+#CMD ["python","manage.py","runserver"]
