@@ -10,6 +10,4 @@ RUN pip install -r /requirements.txt
 WORKDIR /app
 COPY . ./
 
-
-
 #CMD ["python","manage.py","runserver"]
