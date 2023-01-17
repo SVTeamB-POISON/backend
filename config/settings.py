@@ -100,7 +100,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         "CLIENT": {
            "name": 'Flower',
-           "host": 'mongodb+srv://0sik:qkrdudtlr0128@cluster0.pzgdv5k.mongodb.net/test',
+           "host": 'mongodb+srv://0sik:'+env('DJANGO_PASSWORD')+'@cluster0.pzgdv5k.mongodb.net/test',
            "username": '0sik',
            "password": env('DJANGO_PASSWORD'),
            "authMechanism": "SCRAM-SHA-1",
