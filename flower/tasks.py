@@ -4,19 +4,26 @@ import requests
 from .celery import app
 import unicodedata
 from django.conf import settings
-from .AI.predict import detect
+
 
 
 # Celery task
 @app.task
 def descison(base64_string):
-    result = detect(base64_string)
     
+    #ai_url='http://localhost:5001/model'
+    
+    #도커 세팅
+    ai_url = 'http://ai:5001/model'
+    
+    response = requests.post(ai_url,json={"id":base64_string})
+    response = response.json()
+
     #상위 3개 꽃 정보 저장
     json_list = []
 
-    for i in result:
-        name,acc = i.values()
+    for i in response:
+        acc, name = i.values()
 
         if(acc==0):
             break
@@ -40,8 +47,5 @@ def descison(base64_string):
         })
 
     return json_list
-
-    
-
 
     
