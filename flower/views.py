@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.parsers import MultiPartParser
-
+from celery.result import AsyncResult
 # 이미지 업로드, AI 판단 후 탑3 꽃 응답
 class FlowerDecisionAPI(APIView):
     parser_classes = [MultiPartParser]
@@ -21,11 +21,20 @@ class FlowerDecisionAPI(APIView):
         file = request.FILES['id'].read()
         base64_bs = base64.b64encode(file)
         base64_string = base64_bs.decode('ascii')
+        task = descison.delay(base64_string)
+        task_id = {"task_id":task.id}
+        
+        return Response(task_id, status=200)
+    name = openapi.Parameter('task_id', openapi.IN_QUERY, description='task parm', required=False, type=openapi.TYPE_STRING)
+    @swagger_auto_schema(manual_parameters=[name], responses={200: 'Success'})
+    def get(self, request):
+        task_id = request.GET.get('task_id')
+        task = AsyncResult(task_id)
+        if not task.ready(): 
+            return Response({"WAITING"})
+        data = task.result 
 
-        # Celery 비동기 처리
-        json_list = descison.delay(base64_string)
-
-        return Response(json_list.get(), status=200)
+        return Response(data,status=200)
 
 
 # 꽃 도감 출력(pagination), 이름 검색
