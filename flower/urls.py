@@ -7,5 +7,5 @@ urlpatterns = [
     path('image/', FlowerDecisionAPI.as_view()),
     path('details/', FlowerDetail.as_view()),
     path('total-ranking/', FlowerTotalRanking.as_view()),
-    path('hour-ranking/', FlowerHourRanking.as_view())
+    path('hour-ranking/', FlowerHourRanking.as_view()),
 ]
