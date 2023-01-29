@@ -10,6 +10,9 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.parsers import MultiPartParser
 from celery.result import AsyncResult
+
+
+
 # 이미지 업로드, AI 판단 후 탑3 꽃 응답
 class FlowerDecisionAPI(APIView):
     parser_classes = [MultiPartParser]
@@ -25,6 +28,7 @@ class FlowerDecisionAPI(APIView):
         task_id = {"task_id":task.id}
         
         return Response(task_id, status=200)
+
     name = openapi.Parameter('task_id', openapi.IN_QUERY, description='task parm', required=False, type=openapi.TYPE_STRING)
     @swagger_auto_schema(manual_parameters=[name], responses={200: 'Success'})
     def get(self, request):
@@ -41,7 +45,6 @@ class FlowerDecisionAPI(APIView):
 class FlowerList(APIView):
     name = openapi.Parameter('name', openapi.IN_QUERY, description='search parm', required=False, type=openapi.TYPE_STRING)
     page = openapi.Parameter('page', openapi.IN_QUERY, description='search parm', required=False, type=openapi.TYPE_INTEGER)  
-      
     @swagger_auto_schema(manual_parameters=[name,page], responses={200: 'Success'})
     def get(self, request):
         pre_page_num = None
@@ -101,7 +104,6 @@ class FlowerDetail(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FlowerHourRanking(APIView):
-
     def get(self, request):
         ranking_list = Flower.objects.all().order_by('-count')
         serializer = FlowerHourRankingSerializer(ranking_list[:6], many=True)
