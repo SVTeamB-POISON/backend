@@ -33,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY=env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost','poisonsvb.com','host.docker.internal','172.17.0.1']
 
@@ -41,8 +41,8 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost','poisonsvb.com','host.docker.internal',
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders', # CORS
-    'rest_framework', # rest_framework
+    'corsheaders',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'flower',
-    'drf_yasg', # 스웨거
-    'django_prometheus',
+    'drf_yasg', # swagger
+    'django_prometheus', 
 ]
 
 
@@ -68,8 +68,8 @@ MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusAfterMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True # <- 모든 호스트 허용
-CORS_ALLOW_CREDENTIALS = True #
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'config.urls'
 
@@ -92,9 +92,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
+# Mongodb Atlas
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
@@ -109,7 +107,6 @@ DATABASES = {
 }
 
 # Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -128,7 +125,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = 'ko-kr'
 
@@ -140,13 +136,13 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# https setting
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
