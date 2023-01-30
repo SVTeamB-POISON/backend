@@ -10,7 +10,7 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.parsers import MultiPartParser
 from celery.result import AsyncResult
-
+from .connect import collection
 
 
 # 이미지 업로드, AI 판단 후 탑3 꽃 응답
@@ -46,6 +46,7 @@ class FlowerList(APIView):
     name = openapi.Parameter('name', openapi.IN_QUERY, description='search parm', required=False, type=openapi.TYPE_STRING)
     page = openapi.Parameter('page', openapi.IN_QUERY, description='search parm', required=False, type=openapi.TYPE_INTEGER)  
     @swagger_auto_schema(manual_parameters=[name,page], responses={200: 'Success'})
+
     def get(self, request):
         pre_page_num = None
         next_page_num = None
@@ -53,14 +54,37 @@ class FlowerList(APIView):
         
         page = request.GET.get('page', '1')
         name = request.GET.get('name', None)
-
+        
         # 이름 순으로 정렬후 pagination
         flower_list = Flower.objects.all().order_by('name')
 
         # 파라미터가 name 이면 해당 꽃 정보 제공
         if name :
-            flower_name = request.query_params.get('name', None)
-            flower_list = Flower.objects.filter(name__contains=flower_name).order_by('name')
+            flower_list = Flower.objects.filter(name__contains=name).order_by('name')
+        
+        if(len(name.encode())>3):
+            payload = []
+            if name:
+                add_result = collection.aggregate(
+                [
+                    {
+                        '$search': {
+                        'index': 'default1',
+                        'text': {
+                            'query': name,
+                            'path': "name"
+                        }
+                        }
+                    }
+                ]
+            )
+
+            for i in add_result:
+                payload.append(i['name'])
+
+            flower_list = Flower.objects.filter(name__in=payload).order_by('name')
+
+
         
         paginator = Paginator(flower_list, 6)
         flower_obj = paginator.get_page(page)
@@ -114,3 +138,5 @@ class FlowerTotalRanking(APIView):
         ranking_list = Flower.objects.all().order_by('-total_count')
         serializer = FlowerTotalRankingSerializer(ranking_list[:6], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
