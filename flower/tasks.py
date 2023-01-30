@@ -11,10 +11,13 @@ from django.conf import settings
 @app.task
 def descison(base64_string):
     
-    ai_url='http://localhost:5001/model'
+    # local
     
-    #도커 세팅
-    # ai_url = 'http://172.17.0.1:5001/model'
+    # ai_url='http://localhost:5001/model'
+    
+    # Docker
+    
+    ai_url = 'http://172.17.0.1:5001/model'
     
     response = requests.post(ai_url,json={"id":base64_string})
     response = response.json()

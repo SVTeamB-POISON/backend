@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Flower
-from rest_framework.views import APIView, exceptions
+from rest_framework.views import APIView
 from .serializers import FlowerSerializer, FlowerNameSerializer, FlowerHourRankingSerializer,FlowerTotalRankingSerializer
 from .tasks import descison
 import base64
@@ -31,6 +31,7 @@ class FlowerDecisionAPI(APIView):
 
     name = openapi.Parameter('task_id', openapi.IN_QUERY, description='task parm', required=False, type=openapi.TYPE_STRING)
     @swagger_auto_schema(manual_parameters=[name], responses={200: 'Success'})
+
     def get(self, request):
         task_id = request.GET.get('task_id')
         task = AsyncResult(task_id)
@@ -62,6 +63,8 @@ class FlowerList(APIView):
         if name :
             flower_list = Flower.objects.filter(name__contains=name).order_by('name')
         
+        
+        # Mongodb Atlas Search
         if(len(name.encode())>3):
             payload = []
             if name:
@@ -127,12 +130,14 @@ class FlowerDetail(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 꽃 실시간 랭킹
 class FlowerHourRanking(APIView):
     def get(self, request):
         ranking_list = Flower.objects.all().order_by('-count')
         serializer = FlowerHourRankingSerializer(ranking_list[:6], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 꽃 종합 랭킹
 class FlowerTotalRanking(APIView):
     def get(self, request):
         ranking_list = Flower.objects.all().order_by('-total_count')
