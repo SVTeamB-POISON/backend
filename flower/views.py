@@ -62,30 +62,29 @@ class FlowerList(APIView):
         # 파라미터가 name 이면 해당 꽃 정보 제공
         if name :
             flower_list = Flower.objects.filter(name__contains=name).order_by('name')
-        
-        
-        # Mongodb Atlas Search
-        if(len(name.encode())>3):
-            payload = []
-            if name:
-                add_result = collection.aggregate(
-                [
-                    {
-                        '$search': {
-                        'index': 'default1',
-                        'text': {
-                            'query': name,
-                            'path': "name"
+            
+            # Mongodb Atlas Search
+            if(len(name.encode())>3):
+                payload = []
+                if name:
+                    add_result = collection.aggregate(
+                    [
+                        {
+                            '$search': {
+                            'index': 'default1',
+                            'text': {
+                                'query': name,
+                                'path': "name"
+                            }
+                            }
                         }
-                        }
-                    }
-                ]
-            )
+                    ]
+                )
 
-            for i in add_result:
-                payload.append(i['name'])
+                for i in add_result:
+                    payload.append(i['name'])
 
-            flower_list = Flower.objects.filter(name__in=payload).order_by('name')
+                flower_list = Flower.objects.filter(name__in=payload).order_by('name')
 
 
         
